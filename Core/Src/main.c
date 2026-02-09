@@ -166,7 +166,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
+  PA8_TOGGLE(); // slave select must be idle high
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -294,7 +294,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
-  hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
   hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_LSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
@@ -354,12 +354,23 @@ static void MX_USART2_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
   /* USER CODE BEGIN MX_GPIO_Init_1 */
 
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -372,11 +383,19 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
     if(hspi->Instance == SPI1)
     {
+//    	Accel_Sample accel_data = {
+//    			.ax = (int16_t)(spi_rx_buffer[2] << 8 | spi_rx_buffer[1]),
+//				.ay = (int16_t)(spi_rx_buffer[4] << 8 | spi_rx_buffer[3]),
+//				.az = (int16_t)(spi_rx_buffer[6] << 8 | spi_rx_buffer[5])
+//    	};
+
     	Accel_Sample accel_data = {
-    			.ax = (int16_t)(spi_rx_buffer[2] << 8 | spi_rx_buffer[1]),
-				.ay = (int16_t)(spi_rx_buffer[4] << 8 | spi_rx_buffer[3]),
-				.az = (int16_t)(spi_rx_buffer[6] << 8 | spi_rx_buffer[5])
-    	};
+    	    			.ax = spi_rx_buffer[0],
+    	    	};
+
+    	// pull slave select back to idle high
+    	PA8_TOGGLE();
+
         // SPI transfer done, received bytes are now in your rx buffer, push to queue
     	osMessageQueuePut(AccelQueueHandle, &accel_data, 0, 0);
 
@@ -440,8 +459,12 @@ void StartSPIAcquisitionTask(void *argument)
   for(;;)
   {
 	  memset(spi_tx_buffer, 0x00, SPI_BUFF_SIZE);
+	  spi_tx_buffer[0] = 0x17;
 
-	  generate_spi_cmd(spi_tx_buffer, OUT_X_L_ADDR, true, true);
+	  // generate_spi_cmd(spi_tx_buffer, OUT_X_L_ADDR, false, true);
+
+	  // pull slave select low on transmit and receive
+	  PA8_TOGGLE();
 
 	  HAL_SPI_TransmitReceive_IT(&hspi1, spi_tx_buffer, spi_rx_buffer, 7);
 

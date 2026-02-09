@@ -4,9 +4,9 @@
 ../Core/Src/main.c:237:6:SystemClock_Config	112	static
 ../Core/Src/main.c:280:13:MX_SPI1_Init	8	static
 ../Core/Src/main.c:320:13:MX_USART2_UART_Init	8	static
-../Core/Src/main.c:355:13:MX_GPIO_Init	16	static
-../Core/Src/main.c:371:6:HAL_SPI_TxRxCpltCallback	40	static
-../Core/Src/main.c:397:6:StartUARTTXTask	40	static
-../Core/Src/main.c:436:6:StartSPIAcquisitionTask	16	static
-../Core/Src/main.c:462:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/main.c:480:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/main.c:355:13:MX_GPIO_Init	32	static
+../Core/Src/main.c:382:6:HAL_SPI_TxRxCpltCallback	40	static
+../Core/Src/main.c:416:6:StartUARTTXTask	40	static
+../Core/Src/main.c:455:6:StartSPIAcquisitionTask	16	static
+../Core/Src/main.c:485:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:503:6:Error_Handler	8	static,ignoring_inline_asm

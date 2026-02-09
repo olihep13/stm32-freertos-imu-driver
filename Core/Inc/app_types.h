@@ -5,7 +5,12 @@
 
 #define SPI_BUFF_SIZE 		(7)
 
-#define OUT_X_L_ADDR		(0x28)
+#define OUT_X_L_ADDR		(0x2A)
+
+// Macros for PA8
+#define PA8_HIGH() HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET)
+#define PA8_LOW()  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET)
+#define PA8_TOGGLE() HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8)
 
 typedef struct
 {

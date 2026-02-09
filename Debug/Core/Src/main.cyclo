@@ -5,8 +5,8 @@
 ../Core/Src/main.c:280:13:MX_SPI1_Init	2
 ../Core/Src/main.c:320:13:MX_USART2_UART_Init	2
 ../Core/Src/main.c:355:13:MX_GPIO_Init	1
-../Core/Src/main.c:371:6:HAL_SPI_TxRxCpltCallback	2
-../Core/Src/main.c:397:6:StartUARTTXTask	2
-../Core/Src/main.c:436:6:StartSPIAcquisitionTask	1
-../Core/Src/main.c:462:6:HAL_TIM_PeriodElapsedCallback	2
-../Core/Src/main.c:480:6:Error_Handler	1
+../Core/Src/main.c:382:6:HAL_SPI_TxRxCpltCallback	2
+../Core/Src/main.c:416:6:StartUARTTXTask	2
+../Core/Src/main.c:455:6:StartSPIAcquisitionTask	1
+../Core/Src/main.c:485:6:HAL_TIM_PeriodElapsedCallback	2
+../Core/Src/main.c:503:6:Error_Handler	1
